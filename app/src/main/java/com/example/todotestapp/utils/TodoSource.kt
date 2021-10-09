@@ -13,25 +13,18 @@ class TodoSource(
 
         val nextPage = params.key ?: 1
         return try {
-
-           // 1: first 10 data skip and favorite doesn't work
-               // 2 0: first 10 data duplicates value and favorite works
-
-            val todoResponse = todoRepository.getTodos(nextPage*10)
-
+            val todoResponse = todoRepository.getTodos((nextPage-1)*10)
             LoadResult.Page(
                 data = todoResponse,
                 prevKey =  if (nextPage == 1) null else nextPage - 1,
                 nextKey =  if(todoResponse.isEmpty()) null else nextPage + 1
-
-                //if (nextPage == 1) null else
-                //if(todoResponse.isEmpty()) null else
-
             )
+
         } catch (e: Exception) {
             LoadResult.Error(e)
         }
     }
+
 
     override fun getRefreshKey(state: PagingState<Int, TodoItem>): Int? {
         return state.anchorPosition?.let {
